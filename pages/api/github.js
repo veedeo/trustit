@@ -1,13 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import crypto from 'crypto';
-import MemoryStore from '../../lib/store';
-
-const secret = 'UYTlk9Hdybmq5LUMzC';
-const store = new MemoryStore();
+import store from '../../lib/store';
 
 function calculatePayloadSignature(body) {
   const signature = crypto
-    .createHmac('sha256', secret)
+    .createHmac('sha256', process.env.GITHUB_WEBHOOK_SECRET)
     .update(JSON.stringify(body))
     .digest('hex');
   return `sha256=${signature}`;
@@ -23,11 +20,13 @@ export default async (req, res) => {
   if (req.headers['x-github-event'] === 'pull_request' && body.action === 'closed') {
     const pullRequest = { 
       source: 'github',
+      title: body.title,
       action: body.action,
       externalId: body.pull_request.id,      
       merged_at: body.pull_request.merged_at,
       merged_by: body.pull_request.merged_by.login,
-      html_url: body.pull_request.html_url
+      html_url: body.pull_request.html_url,
+      _raw: body,
     }
     await store.closePullRequest(pullRequest);
 
