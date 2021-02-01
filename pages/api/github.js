@@ -14,7 +14,7 @@ function calculatePayloadSignature(body) {
 }
 
 export default async (req, res) => {
-  const { body } = req;
+  const { body } = req; 
   const signature = calculatePayloadSignature(body);
   if (req.headers['x-hub-signature-256'] !== signature) {
     return res.status(500).json({ message: 'Bad signature' });
