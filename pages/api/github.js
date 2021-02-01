@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import MemoryStore from '../../lib/store';
 
 const store = new MemoryStore();
-const secret = crypto.createHmac('sha256').update('#66T6zMk!kxz&m#y7X').digest('hex');
+const secret = crypto.createHash('sha256').update('#66T6zMk!kxz&m#y7X').digest('hex');
 
 export default async (req, res) => {
   if (req.headers['x-github-event'] !== secret) {
