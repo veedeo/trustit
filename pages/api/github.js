@@ -6,7 +6,8 @@ const secret = 'UYTlk9Hdybmq5LUMzC';
 const store = new MemoryStore();
 
 function calculatePayloadSignature(payload) {
-  return crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  const signature = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return `sha256=${signature}`;
 }
 
 export default async (req, res) => {
