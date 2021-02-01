@@ -13,7 +13,7 @@ export default async (req, res) => {
   const signature = calculatePayloadSignature(req.body.payload);
   if (req.headers['x-hub-signature-256'] !== `sha256=${signature}`) {
     return res.status(500).json({ message: 'Bad secret' });
-  }
+  } 
   const parsedPayload = JSON.parse(req.body.payload);
   if (req.headers['x-github-event'] === 'pull_request' && parsedPayload.action === 'closed') {
     const pullRequest = { 
