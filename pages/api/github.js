@@ -2,11 +2,16 @@
 import crypto from 'crypto';
 import MemoryStore from '../../lib/store';
 
+const secret = 'UYTlk9Hdybmq5LUMzC';
 const store = new MemoryStore();
-const secret = crypto.createHash('sha256').update('UYTlk9Hdybmq5LUMzC').digest('hex');
+
+function calculatePayloadSignature(payload) {
+  return crypto.createHmac('sha256', secret).update(payload).digest('hex');
+}
 
 export default async (req, res) => {
-  if (req.headers['x-github-event'] !== secret) {
+  const signature = calculatePayloadSignature(req.body.payload);
+  if (req.headers['x-hub-signature-256'] !== `sha256=${signature}`) {
     return res.status(500).json({ message: 'Bad secret' });
   }
   const parsedPayload = JSON.parse(req.body.payload);
