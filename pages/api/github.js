@@ -16,7 +16,7 @@ export default async (req, res) => {
   }
   const parsedPayload = JSON.parse(req.body.payload);
   if (req.headers['x-github-event'] === 'pull_request' && parsedPayload.action === 'closed') {
-    const pullRequest = {
+    const pullRequest = { 
       source: 'github',
       action: parsedPayload.action,
       externalId: parsedPayload.pull_request.id,      
