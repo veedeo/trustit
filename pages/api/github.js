@@ -6,7 +6,10 @@ const secret = 'UYTlk9Hdybmq5LUMzC';
 const store = new MemoryStore();
 
 function calculatePayloadSignature(body) {
-  const signature = crypto.createHmac('sha256', secret).update(body).digest('hex');
+  const signature = crypto
+    .createHmac('sha256', secret)
+    .update(JSON.stringify(body))
+    .digest('hex');
   return `sha256=${signature}`;
 }
 
