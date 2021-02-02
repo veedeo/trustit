@@ -53,5 +53,5 @@ export async function saveEvidence(id, html_url) {
       uploadStream.end();
     })
     await once(r, 'end');
-    return uploadStream.id;
+    return uploadStream.id.toHexString();
 }
