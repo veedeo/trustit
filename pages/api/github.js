@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import request from 'request';
 import { once } from 'events';
 import store from '../../lib/store';
+import { takeScreenshot } from '../../lib/screenshot';
 
 function calculatePayloadSignature(body) {
   const signature = crypto
@@ -38,19 +39,23 @@ export default async (req, res) => {
 }
 
 export async function saveEvidence(id, html_url) {
+  debugger;
+  const buffer = await takeScreenshot(html_url);
   const uploadStream = await store.getUploadEvidenceStream(id);
-  const r = request
-    .get(`${process.env.RENDERER_HOST}/?type=screenshot&fullPage=true&url=${html_url}`)
-    .on('response', function(response) {
-      console.log(response.statusCode)
-      console.log(response.headers['content-type'])
-    })
-    .on('data', function(chunk) {
-      uploadStream.write(chunk)
-    })
-    .on('end', function() {
-      uploadStream.end();
-    })
-    await once(r, 'end');
+  uploadStream.write(buffer);
+  uploadStream.end();
+  // const r = request
+  //   .get(`${process.env.RENDERER_HOST}/?type=screenshot&fullPage=true&url=${html_url}`)
+  //   .on('response', function(response) {
+  //     console.log(response.statusCode)
+  //     console.log(response.headers['content-type'])
+  //   })
+  //   .on('data', function(chunk) {
+  //     uploadStream.write(chunk)
+  //   })
+  //   .on('end', function() {
+  //     uploadStream.end();
+  //   })
+    // await once(r, 'end');
     return uploadStream.id.toHexString();
 }
