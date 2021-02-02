@@ -20,6 +20,7 @@ export default async (req, res) => {
   }
 
   if (req.headers['x-github-event'] === 'pull_request' && body.action === 'closed') {
+    debugger;
     const evidenceId = await saveEvidence(pullRequest.externalId, pullRequest.html_url);
     const pullRequest = { 
       source: 'github',
