@@ -1,4 +1,9 @@
+import util from 'util';
+import stream from 'stream';
 import store from '../../../lib/store';
+import { saveEvidence } from '../github';
+
+const pipeline = util.promisify(stream.pipeline);
 
 export default async function(req, res) {
   if (req.method !== 'GET') {
@@ -7,7 +12,13 @@ export default async function(req, res) {
   }
 
   const { id } = req.query;
+  
+  // await saveEvidence(id, 'http://google.com');
   const stream = await store.getDownloadEvidenceStream(id);
-  res.writeHead(200, { 'Content-Type': 'image/png' });
-  stream.pipe(res);
+  try {
+    await pipeline(stream, res);
+    res.writeHead(200, { 'Content-Type': 'image/png' });  
+  } catch (error) {
+    return res.status(500).end();
+  }  
 }

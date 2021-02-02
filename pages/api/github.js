@@ -30,18 +30,16 @@ export default async (req, res) => {
       html_url: body.pull_request.html_url,
       _raw: body,
     }
-    await Promise.all([
-      store.closePullRequest(pullRequest),
-      saveEvidence(pullRequest.externalId, pullRequest.html_url),
-    ])
+    await store.closePullRequest(pullRequest);
+    await saveEvidence(pullRequest.externalId, pullRequest.html_url);
   }
   res.status(200).json({ name: 'Github', status: 'Ok' });
 }
 
-async function saveEvidence(id, html_url) {
+export async function saveEvidence(id, html_url) {
   const uploadStream = await store.getUploadEvidenceStream(id);
   const r = request
-    .get(`http://localhost:8080/?type=screenshot&fullPage=true&url=${html_url}`)
+    .get(`${process.env.RENDERER_HOST}/?type=screenshot&fullPage=true&url=${html_url}`)
     .on('response', function(response) {
       console.log(response.statusCode)
       console.log(response.headers['content-type'])
@@ -52,5 +50,5 @@ async function saveEvidence(id, html_url) {
     .on('end', function() {
       uploadStream.end();
     })
-    return once(r, 'end');
+    await once(r, 'end');
 }
