@@ -39,22 +39,24 @@ export default async (req, res) => {
 }
 
 export async function saveEvidence(id, html_url) {
-  const buffer = await takeScreenshot(html_url);
+  // const buffer = await takeScreenshot(html_url);
   const uploadStream = await store.getUploadEvidenceStream(id);
-  uploadStream.write(buffer);
-  uploadStream.end();
-  // const r = request
-  //   .get(`${process.env.RENDERER_HOST}/?type=screenshot&fullPage=true&url=${html_url}`)
-  //   .on('response', function(response) {
-  //     console.log(response.statusCode)
-  //     console.log(response.headers['content-type'])
-  //   })
-  //   .on('data', function(chunk) {
-  //     uploadStream.write(chunk)
-  //   })
-  //   .on('end', function() {
-  //     uploadStream.end();
-  //   })
-    // await once(r, 'end');
+  // uploadStream.write(buffer);
+  // uploadStream.end();
+
+  const r = request
+    .get(`https://screenshotapi.net/api/v1/screenshot?token=${process.env.SCREENSHOT_APIKEY}&full_page=true&output=image&url=${html_url}`)
+    .on('response', function(response) {
+      console.log(response.statusCode)
+      console.log(response.headers['content-type'])
+    })
+    .on('data', function(chunk) {
+      uploadStream.write(chunk)
+    })
+    .on('end', function() {
+      uploadStream.end();
+    })
+    await once(r, 'end');
+
     return uploadStream.id.toHexString();
 }
