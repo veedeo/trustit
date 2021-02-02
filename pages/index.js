@@ -17,11 +17,7 @@ export default function Home({ pull_requests }) {
           {pull_requests.map(({ externalId, evidenceId, merged_at, merged_by, title }) => (
             <li key={externalId}>
               [{new Date(merged_at).toLocaleString()}] - [{merged_by}] - {title}
-              <img
-                src={`/api/evidence/${evidenceId}`}
-                width={500}
-                height={500}
-              />
+              <img src={`/api/evidence/${evidenceId}`} />
             </li>
           ))}
         </ul>
