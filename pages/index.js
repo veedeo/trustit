@@ -52,7 +52,7 @@ export default function Home({ pull_requests }) {
             aria-controls="panel1bh-content"
             id="panel1bh-header"
           >
-            <Typography className={classes.heading}>{new Date(merged_at).toLocaleString()} - {merged_by}</Typography>
+            <Typography className={classes.heading}>{new Date(merged_at).toLocaleString()} - {merged_by} - </Typography>
             <Typography className={classes.secondaryHeading}>{title}</Typography>
           </AccordionSummary>
           <AccordionDetails>
