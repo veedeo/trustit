@@ -13,7 +13,7 @@ export default async function(req, res) {
 
   const { id } = req.query;
   
-  // await saveEvidence(id, 'http://google.com');
+  // await saveEvidence(id, 'http://google.com'); 
   const stream = await store.getDownloadEvidenceStream(id);
   try {
     await pipeline(stream, res);
