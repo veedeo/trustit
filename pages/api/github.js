@@ -41,7 +41,7 @@ export default async (req, res) => {
 export async function saveEvidence(id, html_url) {
   // const buffer = await takeScreenshot(html_url);
   const uploadStream = await store.getUploadEvidenceStream(id);
-  // uploadStream.write(buffer);
+  // uploadStream.write(buffer); 
   // uploadStream.end();
 
   const r = request
