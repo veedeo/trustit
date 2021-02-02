@@ -20,6 +20,7 @@ export default async (req, res) => {
   }
 
   if (req.headers['x-github-event'] === 'pull_request' && body.action === 'closed') {
+    const evidenceId = await saveEvidence(pullRequest.externalId, pullRequest.html_url);
     const pullRequest = { 
       source: 'github',
       title: body.pull_request.title,
@@ -29,9 +30,9 @@ export default async (req, res) => {
       merged_by: body.pull_request.merged_by.login,
       html_url: body.pull_request.html_url,
       _raw: body,
+      evidenceId,
     }
-    await store.closePullRequest(pullRequest);
-    await saveEvidence(pullRequest.externalId, pullRequest.html_url);
+    await store.closePullRequest(pullRequest);    
   }
   res.status(200).json({ name: 'Github', status: 'Ok' });
 }
@@ -51,4 +52,5 @@ export async function saveEvidence(id, html_url) {
       uploadStream.end();
     })
     await once(r, 'end');
+    return uploadStream.id;
 }
