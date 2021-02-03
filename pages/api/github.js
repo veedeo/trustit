@@ -4,7 +4,7 @@ import request from 'request';
 import { once } from 'events';
 import store from '../../lib/store';
 import { takeScreenshot } from '../../lib/screenshot';
-
+  
 function calculatePayloadSignature(body) {
   const signature = crypto
     .createHmac('sha256', process.env.GITHUB_WEBHOOK_SECRET)
